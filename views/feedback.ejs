@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css"> </head>
+<body>
+    <header>
+        <h1>Kennett Square Library Makerspace</h1>
+        <h2><%= title %></h2>
+    </header>
+
+    <main>
+        <section class="feedback-form">
+            <h3>Submit Your Satisfaction</h3>
+            <form action="/feedback/submit" method="POST">
+                <div>
+                    <label for="level">Satisfaction Level (1-5):</label>
+                    <input type="number" id="level" name="level" min="1" max="5" required>
+                </div>
+                <div>
+                    <label for="comment">Comments (Optional):</label>
+                    <textarea id="comment" name="comment" rows="4"></textarea>
+                </div>
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </section>
+
+        <section class="recent-feedback">
+            <h3>Recent Feedback</h3>
+            <% if (feedbackEntries.length > 0) { %>
+                <ul>
+                    <% feedbackEntries.forEach(entry => { %>
+                        <li>
+                            <strong>Level: <%= entry.level %>/5</strong>
+                            <% if (entry.comment) { %>
+                                <p>Comment: <%= entry.comment %></p>
+                            <% } %>
+                            <small>Submitted: <%= entry.submittedAt.toLocaleDateString() %></small>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>No feedback submitted yet.</p>
+            <% } %>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Kennett Square Library</p>
+    </footer>
+</body>
+</html>
