@@ -20,9 +20,29 @@
             <h3>Submit Your Satisfaction</h3>
             <form action="/feedback/submit" method="POST">
                 <div>
-                    <label for="level">Satisfaction Level (1-5):</label>
-                    <input type="number" id="level" name="level" min="1" max="5" required>
-                </div>
+    <label for="level">Satisfaction Level:</label>
+        <div class="satisfaction-slider-container">
+            <div class="slider-icons">
+                <span>😟</span>
+                <span>😕</span>
+                <span>😐</span>
+                <span>🙂</span>
+                <span>😁</span>
+            </div>
+            <input type="range" id="level" name="level" min="1" max="5" value="3" required>
+        <div class="slider-labels">
+            <span>Very dissatisfied</span>
+            <span>Dissatisfied</span>
+            <span>Neutral</span>
+            <span>Satisfied</span>
+            <span>Very satisfied</span>
+        </div>
+        <div class="slider-value-display">
+            <span id="selected-emoji">😐</span>
+            <span id="selected-text">Neutral</span>
+        </div>
+    </div>
+</div>
                 <div>
                     <label for="comment">Comments (Optional):</label>
                     <textarea id="comment" name="comment" rows="4"></textarea>
@@ -31,13 +51,27 @@
             </form>
         </section>
 
+                <%
+        const satisfactionMap = {
+            '1': { text: 'Very dissatisfied', emoji: '😟' },
+            '2': { text: 'Dissatisfied', emoji: '😕' },
+            '3': { text: 'Neutral', emoji: '😐' },
+            '4': { text: 'Satisfied', emoji: '🙂' },
+            '5': { text: 'Very satisfied', emoji: '😁' }
+        };
+        %>
+
         <section class="recent-feedback">
             <h3>Recent Feedback</h3>
             <% if (feedbackEntries.length > 0) { %>
                 <ul>
                     <% feedbackEntries.forEach(entry => { %>
                         <li>
-                            <strong>Level: <%= entry.level %>/5</strong>
+                            <strong>
+                                <%= satisfactionMap[entry.level].emoji %> 
+                                <%= satisfactionMap[entry.level].text %>
+                            </strong>
+                            
                             <% if (entry.comment) { %>
                                 <p>Comment: <%= entry.comment %></p>
                             <% } %>
@@ -45,8 +79,6 @@
                         </li>
                     <% }); %>
                 </ul>
-            <% } else { %>
-                <p>No feedback submitted yet.</p>
             <% } %>
         </section>
     </main>
@@ -54,5 +86,45 @@
     <footer>
         <p>&copy; <%= new Date().getFullYear() %> Kennett Square Library</p>
     </footer>
+    <script>
+    const slider = document.getElementById('level');
+    const selectedEmoji = document.getElementById('selected-emoji');
+    const selectedText = document.getElementById('selected-text');
+    const sliderIcons = document.querySelectorAll('.slider-icons span');
+
+    // This map links the slider's numeric value to an emoji, text, and index
+    const satisfactionMap = {
+        '1': { emoji: '😟', text: 'Very dissatisfied', index: 0 },
+        '2': { emoji: '😕', text: 'Dissatisfied', index: 1 },
+        '3': { emoji: '😐', text: 'Neutral', index: 2 },
+        '4': { emoji: '🙂', text: 'Satisfied', index: 3 },
+        '5': { emoji: '😁', text: 'Very satisfied', index: 4 }
+    };
+
+    // Function to update the display
+    function updateSliderDisplay(value) {
+        // Update the big emoji and text display
+        selectedEmoji.textContent = satisfactionMap[value].emoji;
+        selectedText.textContent = satisfactionMap[value].text;
+        
+        // Update the active icon above the slider
+        const activeIndex = satisfactionMap[value].index;
+        sliderIcons.forEach((icon, index) => {
+            if (index === activeIndex) {
+                icon.classList.add('active');
+            } else {
+                icon.classList.remove('active');
+            }
+        });
+    }
+
+    // Listen for the slider to be moved
+    slider.addEventListener('input', () => {
+        updateSliderDisplay(slider.value);
+    });
+
+    // Set the initial state when the page loads
+    updateSliderDisplay(slider.value);
+</script>
 </body>
 </html>
