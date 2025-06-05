@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+    <title><%= title %></title>
+</head>
+<body>
+    <header>
+        <div class="header-login">
+            <span>Welcome, <%= user.username %>!</span>
+            <a href="/users/logout" class="login-button" style="background-color: #D9534F;">Logout</a>
+        </div>
+        <h1>Kennett Square Library</h1>
+        <h2><%= title %></h2>
+    </header>
+    <main>
+        <section>
+            <h3>Makerspace Statistics</h3>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h4>Total Submissions</h4>
+                    <p><%= stats.total %></p>
+                </div>
+                <div class="stat-card">
+                    <h4>Average Satisfaction</h4>
+                    <p><%= stats.average %> / 5.00</p>
+                </div>
+            </div>
+        </section>
+        </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Kennett Square Library</p>
+    </footer>
+</body>
+</html>
