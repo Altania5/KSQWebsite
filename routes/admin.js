@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Satisfaction = require('../models/Satisfaction');
+const PageView = require('../models/PageView');
 const { ensureAuthenticated } = require('../middleware/auth');
 
 function formatSecondsToTime(avgSeconds) {
@@ -48,13 +49,15 @@ router.get('/dashboard', ensureAuthenticated, async (req, res) => {
         }
     }
 ]);
-        
+        const feedbackPageView = await PageView.findOne({ page: 'feedback_page' });
+        const viewCount = feedbackPageView ? feedbackPageView.count : 0;
         const avgSeconds = averageTimeOfDay.length > 0 ? averageTimeOfDay[0].avgSeconds : NaN;
         
         const stats = {
             total: totalSubmissions,
             average: averageSatisfaction.length > 0 ? averageSatisfaction[0].avgLevel.toFixed(2) : 'N/A',
-            averageTime: formatSecondsToTime(avgSeconds)
+            averageTime: formatSecondsToTime(avgSeconds),
+            feedbackViews: viewCount
         };
 
         res.render('dashboard', { 
